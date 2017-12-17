@@ -1,0 +1,43 @@
+body {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+#board {
+    border-collapse: collapse;
+}
+
+#board td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+/*#board tr td:hover {background-color: #ddd;}*/
+
+#board tr td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.scratch-cell {
+    background-color: grey;
+}
+
+.scratch-cell:hover {
+    cursor: not-allowed;
+}
+
+.bingo-cell:hover {
+    cursor: not-allowed;
+}
+
+.custom-btn {
+    border: 2px solid #ddd;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+    background-color: #1DE9B6;
+    border-radius: 10px;
+}
