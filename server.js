@@ -8,11 +8,7 @@ app.use(express.static(__dirname + '/public'));
 
 app.set('view engine', 'ejs');
 
-app.get('/', function (req, res) {
-	res.send('Visit /bingo to play the game');
-});
-
-app.get('/bingo', function(req, res) {
+app.get('/', function(req, res) {
 	res.render('pages/bingo');
 });
 
