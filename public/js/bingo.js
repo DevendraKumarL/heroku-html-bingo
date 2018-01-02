@@ -1,23 +1,23 @@
-var gameBingoElement = document.getElementById("gameBingo");
-var boardElement = document.getElementById("gameBoard");
-var	bingoTitle = document.getElementById("bingo-title");
-var restartBtn = document.getElementById("restartBtn");
-var bingoDivElements = [];
+var ws = new WebSocket("ws://localhost:5002");
 
-var bingoNumbers = [];
-var bingoPositions = [];
+var gameBingoElement = document.getElementById("gameBingo"),
+    boardElement = document.getElementById("gameBoard"),
+    bingoTitle = document.getElementById("bingo-title");
 
-var bingoBoard = [];
-var bingoBoardChecked = [];
+var bingoDivElements = [],
+    bingoNumbers = [],
+    bingoPositions = [],
+    bingoBoard = [],
+    bingoBoardChecked = [];
 
-var strikes = 0;
-var colorFlag = false;
-var strikeColors = ["#FF1744", "#D500F9", "#651FFF", "#00E5FF", "#1DE9B6"];
-var bingoStrikeChecked = [false, false, false, false, false];
+var strikes = 0,
+    colorFlag = false;
 
-var rowStrikes = [false, false, false, false, false];
-var colStrikes = [false, false, false, false, false];
-var diagonalStrikes = [false, false];
+var strikeColors = ["#FF1744", "#D500F9", "#651FFF", "#00E5FF", "#1DE9B6"],
+    bingoStrikeChecked = [false, false, false, false, false],
+    rowStrikes = [false, false, false, false, false],
+    colStrikes = [false, false, false, false, false],
+    diagonalStrikes = [false, false];
 
 function getBingoDivElements() {
 	for (var i = 0; i < 5; i++) {
@@ -50,7 +50,7 @@ function shuffleList(arr) {
 
 function initiateBoard() {
 	for (var i = 0; i < 5; i++) {
-		bingoBoard[i] = [];		
+		bingoBoard[i] = [];
 		bingoBoardChecked[i] = [];
 	}
 	for (var i = 0; i < 5; i++) {
@@ -120,7 +120,9 @@ function itIsABingo() {
 }
 
 function processStrike(method) {
-	switch(method) {
+    var trueCount = 0,
+        reverseRowIndex;
+    switch(method) {
 		case 0:
 				for (var i = 0; i < 5; i++) {
 					trueCount = 0;
@@ -129,7 +131,7 @@ function processStrike(method) {
 							if (bingoBoardChecked[i][j])
 								trueCount++;
 						}
-						if (trueCount == 5) {
+						if (trueCount === 5) {
 							rowStrikes[i] = true;
 							strikes++;
 							console.log("rowStrike : " + i);
@@ -145,7 +147,7 @@ function processStrike(method) {
 							if (bingoBoardChecked[j][i])
 								trueCount++;
 						}
-						if (trueCount == 5) {
+						if (trueCount === 5) {
 							colStrikes[i] = true;
 							strikes++;
 							console.log("colStrike : " + i);
@@ -162,7 +164,7 @@ function processStrike(method) {
 							trueCount++;
 					}
 				}
-				if (trueCount == 5) {
+				if (trueCount === 5) {
 					diagonalStrikes[0] = true;
 					strikes++;
 					console.log("diagonalStrike : 0");
@@ -178,7 +180,7 @@ function processStrike(method) {
 					}
 					reverseRowIndex--;
 				}
-				if (trueCount == 5) {
+				if (trueCount === 5) {
 					diagonalStrikes[1] = true;
 					strikes++;
 					console.log("diagonalStrike : 1");
@@ -188,11 +190,11 @@ function processStrike(method) {
 }
 
 function processGame() {
-	if (strikes == 5) {
+	if (strikes === 5) {
 		itIsABingo();
 	}
 	else {
-		prevStrikes = strikes;
+		var prevStrikes = strikes;
 		// row check
 		processStrike(0);
 		// column check
@@ -201,7 +203,7 @@ function processGame() {
 		processStrike(2);
 
 		if (strikes > prevStrikes) {
-			diff = strikes - prevStrikes;
+			var diff = strikes - prevStrikes;
 			for (var i = 0; i < 5; i++) {
 				if (!bingoStrikeChecked[i] && diff > 0) {
 					bingoStrikeChecked[i] = true;
@@ -211,15 +213,15 @@ function processGame() {
 			}
 		}
 
-		if (strikes == 5) {
+		if (strikes === 5) {
 			itIsABingo();
 		}
 	}
 }
 
 function scratchCell(cellElement) {
-	boardIndex = cellElement.id;
-	boardCell = document.getElementById(boardIndex);
+	var boardIndex = cellElement.id,
+        boardCell = document.getElementById(boardIndex);
 	boardCell.setAttribute("class", "scratch-cell");
 	console.log(boardIndex);
 	bingoBoardChecked[parseInt(boardIndex[0])][parseInt(boardIndex[1])] = true;
@@ -228,15 +230,14 @@ function scratchCell(cellElement) {
 }
 
 function createBingo() {
-	bLetters = ["B", "I", "N", "G", "O"];
-	
-	table = document.createElement("table");
+	var bLetters = ["B", "I", "N", "G", "O"],
+        table = document.createElement("table");
 	table.setAttribute("border", "1");
 	table.setAttribute("id", "board");
-	tr = document.createElement("tr");
+	var tr = document.createElement("tr");
 
 	for (var i = 0; i < 5; i++) {
-		td = document.createElement("td");
+		var td = document.createElement("td");
 		td.setAttribute("id", "bingo" + (i+1));
 		td.appendChild(document.createTextNode(bLetters[i]));
 		td.setAttribute("class", "bingo-cell");
@@ -248,13 +249,13 @@ function createBingo() {
 }
 
 function createBingoBoardUI() {
-	table = document.createElement("table");
+	var table = document.createElement("table");
 	table.setAttribute("border", "1");
 	table.setAttribute("id", "board");
 	for (var i = 0; i < 5; i++) {
-		tr = document.createElement("tr");
+		var tr = document.createElement("tr");
 		for (var j = 0; j < 5; j++) {
-			td = document.createElement("td");
+			var td = document.createElement("td");
 			td.appendChild(document.createTextNode(bingoBoard[i][j]));
 			td.setAttribute("id", i + "" + j);
 			td.onclick = function () {
@@ -280,4 +281,41 @@ createBingo();
 getBingoDivElements();
 createBingoBoardUI();
 
+// var name;
+//
+// function takeInputName() {
+//     name = prompt("Enter your name");
+//     console.log("Client: " + name);
+// }
+//
+// takeInputName();
 
+function webSocketInit() {
+	if (! "WebSocket" in window) {
+		console.log("WebSocket not supported");
+		return;
+	}
+
+	ws.onopen = function () {
+	    console.log("::Client:: Connection is open...");
+	};
+
+	ws.onmessage = function (e) {
+		console.log("::Client:: Message received... :" + e.data);
+	};
+
+    ws.onerror = function () {
+        console.log("::Server:: WebSocket error...");
+        ws.close();
+    };
+
+	ws.onclose = function () {
+		console.log("::Client:: Connection is closed...");
+	};
+
+	window.onbeforeunload = function () {
+		ws.close();
+	};
+}
+
+webSocketInit();

@@ -11,8 +11,6 @@ body {
     padding: 10px;
 }
 
-/*#board tr td:hover {background-color: #ddd;}*/
-
 #board tr td {
     padding-top: 10px;
     padding-bottom: 10px;
