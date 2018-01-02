@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://localhost:5002");
+// var ws = new WebSocket("ws://localhost:5002");
 
 var gameBingoElement = document.getElementById("gameBingo"),
     boardElement = document.getElementById("gameBoard"),
@@ -281,41 +281,116 @@ createBingo();
 getBingoDivElements();
 createBingoBoardUI();
 
-// var name;
-//
-// function takeInputName() {
-//     name = prompt("Enter your name");
-//     console.log("Client: " + name);
-// }
-//
-// takeInputName();
+var roomname,
+    password,
+    room;
 
-function webSocketInit() {
-	if (! "WebSocket" in window) {
-		console.log("WebSocket not supported");
-		return;
-	}
-
-	ws.onopen = function () {
-	    console.log("::Client:: Connection is open...");
-	};
-
-	ws.onmessage = function (e) {
-		console.log("::Client:: Message received... :" + e.data);
-	};
-
-    ws.onerror = function () {
-        console.log("::Server:: WebSocket error...");
-        ws.close();
-    };
-
-	ws.onclose = function () {
-		console.log("::Client:: Connection is closed...");
-	};
-
-	window.onbeforeunload = function () {
-		ws.close();
-	};
+function takeInputName() {
+    roomname = prompt("Enter roomname");
+    password = prompt("Enter password");
+    room = roomname + ':' + password;
+    console.log("Room: " + room);
 }
 
-webSocketInit();
+takeInputName();
+
+// function webSocketInit() {
+// 	if (! "WebSocket" in window) {
+// 		console.log("WebSocket not supported");
+// 		return;
+// 	}
+//
+// 	ws.onopen = function () {
+// 	    console.log("::Client:: Connection is open...");
+// 	};
+//
+// 	ws.onmessage = function (e) {
+// 		console.log("::Client:: Message received... :" + e.data);
+// 	};
+//
+//     ws.onerror = function () {
+//         console.log("::Server:: WebSocket error...");
+//         ws.close();
+//     };
+//
+// 	ws.onclose = function () {
+// 		console.log("::Client:: Connection is closed...");
+// 	};
+//
+// 	window.onbeforeunload = function () {
+// 		ws.close();
+// 	};
+// }
+//
+// webSocketInit();
+
+
+var players = {
+    player1: '',
+    player2: ''
+};
+
+$(function () {
+    var socket = io.connect();
+
+    socket.on('connect', function () {
+        console.log('::Client::socket.io::connection Client connected to websocket server... ');
+        socket.emit('room', room);
+    });
+
+    socket.on('join room', function (senderId) {
+        console.log('::Client::socket.io::join room socketId: ', senderId);
+        if (players.player1 === '') {
+            console.log('Player1 joined room');
+            players.player1 = senderId;
+            console.log('players: ', players);
+            return;
+        }
+        if (players.player1 !== '') {
+            console.log('Player2 joined room');
+            players.player2 = senderId;
+            socket.emit('confirm', senderId);
+            console.log('players: ', players);
+        }
+    });
+
+    socket.on('confirm player2', function (player2Id) {
+        console.log('::Client::socket.io::confirm player2 id: ', player2Id);
+        if (players.player2 === '') {
+            players.player2 = player2Id;
+        }
+        console.log('players: ', players);
+    });
+
+    socket.on('msg receive event', function (msg) {
+        console.log('::Client::socket.io::msg receive event Message received: ', msg);
+        if (msg.sender !== players.player1) {
+            $('#history').append($('<li>').text('msg: ' + msg));
+        }
+    });
+
+    socket.on('no opponent', function (id) {
+       console.log('::Client::socket.io::no opponent id:', id);
+    });
+
+    socket.on('cannot join', function (msg) {
+        console.log('::Client::socket.io::cannot join msg: ', msg);
+        alert(msg);
+        socket.close();
+        $('#messageInput').remove();
+        $('#sendBtn').remove();
+    });
+
+    $('#sendBtn').click(function () {
+        var data = {
+            receiver: players.player2,
+            msg: $('#messageInput').val()
+        };
+        data = JSON.stringify(data);
+        console.log('::Client:: Sending message: ', data, ' to: ', players.player2);
+        socket.emit('msg send event', data);
+        $('#messageInput').val('');
+    });
+
+});
+

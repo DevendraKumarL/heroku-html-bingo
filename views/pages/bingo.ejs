@@ -10,7 +10,16 @@
     <br>
 	<button onclick="restartGame()" id="restartBtn" class="custom-btn">Restart</button>
     <br>
+
+    <input id="messageInput" autocomplete="off" /><button id="sendBtn">Send</button>
+    <br>
+    <div>
+        <ul id="history"></ul>
+    </div>
 </body>
-	<script type="text/javascript" src="./js/bingo.js"></script>
-	<link rel="stylesheet" type="text/css" href="./css/style.css">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+
+<script type="text/javascript" src="./js/bingo.js"></script>
+<link rel="stylesheet" type="text/css" href="./css/style.css">
 </html>
