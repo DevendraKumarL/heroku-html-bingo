@@ -31,11 +31,8 @@ body {
 
 .custom-btn {
     border: 2px solid #ddd;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 10px;
     text-align: center;
     background-color: #1DE9B6;
-    border-radius: 10px;
+    border-radius: 5px;
 }
