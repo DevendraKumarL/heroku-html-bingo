@@ -4,12 +4,22 @@
 	<title>Bingo!</title>
 </head>
 <body>
-	<h1 id="bingo-title">Play Bingo!</h1>
-	<div class="gameBingo" id="gameBingo"></div>
-	<div class="gameBoard" id="gameBoard"></div>
+    <h1 id="bingoTitle">Play Bingo!</h1>
+    <div id="gameDetails" class="card card-3">
+        <div id="roomName">RoomName: </div>
+        <br>
+        <div id="gameReadyStatus">GameStatus: </div>
+        <br>
+        <div id="playerTurnStatus">
+            <div id="player1">Player1</div>
+            <div id="player2">Player2</div>
+        </div>
+    </div>
+    <br><br>
+    <div id="gameBingo"></div>
+    <div id="gameBoard"></div>
     <br>
-	<button onclick="restartGame()" id="restartBtn" class="custom-btn">Restart</button>
-    <br>
+    <button id="restartBtn" class="custom-btn card card-3">Restart</button>
 </body>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>

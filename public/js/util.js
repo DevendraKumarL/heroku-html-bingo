@@ -2,25 +2,25 @@ let exportUtil = module.exports = {};
 
 // util functions
 exportUtil.checkBothPlayersInSameRoom = (Players, socket, receiverId) => {
-    let roomname1,
-        roomname2, socket2;
+    let roomName1,
+        roomName2, socket2;
     for (let i = 0; i < Players.length; ++i) {
         if (socket.id === Players[i].id) {
-            roomname1 = Players[i].roomName;
+            roomName1 = Players[i].roomName;
             break;
         }
     }
-    console.log('::Server::socket.io::msg send event sender roomName: ', roomname1);
+    console.log('::Server::socket.io::msg send event sender roomName: ', roomName1);
     for (let i = 0; i < Players.length; ++i) {
         if (receiverId === Players[i].id) {
-            roomname2 = Players[i].roomName;
+            roomName2 = Players[i].roomName;
             socket2 = Players[i].socket;
             break;
         }
     }
-    console.log('::Server::socket.io::msg send event receiver roomName: ', roomname2);
+    console.log('::Server::socket.io::msg send event receiver roomName: ', roomName2);
 
-    if (roomname1 !== roomname2) {
+    if (roomName1 !== roomName2) {
         socket.emit('no opponent', receiverId);
         return false;
     }

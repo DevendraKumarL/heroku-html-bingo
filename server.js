@@ -2,12 +2,11 @@ const express = require('express'),
 	app = express(),
 	// WebSocket = require('ws').Server,
 	http = require('http').Server(app),
-	io = require('socket.io')(http);
+	io = require('socket.io')(http),
+    util = require('./public/js/util');
 
 let port = process.env.PORT || 5001;
 // let wsPort = process.env.WS_PORT || 5002;
-
-let util = require('./public/js/util');
 
 let Players = [];
 
@@ -42,21 +41,21 @@ io.on('connection', (socket) => {
 		}
     });
 
+	socket.on('disconnect', () => {
+        Players = util.removePlayer(Players, socket.id);
+        console.log('::Server::socket.io::disconnect A client disconnected... Id: ', socket.id);
+        console.log('::Server::socket.io::disconnect Number of Players: ', Players.length);
+    });
+
     // socket.on('msg send event', (msg) => {
-		// console.log('::Server::socket.io::msg send event Message received: ', msg, ' from: ', socket.id);
+    // console.log('::Server::socket.io::msg send event Message received: ', msg, ' from: ', socket.id);
     //     msg = JSON.parse(msg);
     //     let sockt = checkBothPlayersInSameRoom(socket, msg.receiver);
     //     if (sockt === false) {
     //         return;
     //     }
-		// sockt.emit('msg receive event', msg.msg)
+    // sockt.emit('msg receive event', msg.msg)
     // });
-	
-	socket.on('disconnect', () => {
-	    Players = util.removePlayer(Players, socket.id);
-		console.log('::Server::socket.io::disconnect A client disconnected... Id: ', socket.id);
-        console.log('::Server::socket.io::disconnect Number of Players: ', Players.length);
-    });
 });
 
 app.use(express.static(__dirname + '/public'));

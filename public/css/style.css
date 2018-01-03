@@ -30,9 +30,46 @@ body {
 }
 
 .custom-btn {
-    border: 2px solid #ddd;
-    padding: 10px;
+    border: 2px solid cadetblue;
+    padding: 5px 15px;
     text-align: center;
     background-color: #1DE9B6;
     border-radius: 5px;
+    width: 125px;
+}
+.card {
+    border-radius: 2px;
+    display: inline-block;
+    position: relative;
+    margin-bottom: 5px;
+}
+.card-3 {
+    /*box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);*/
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 0 6px 1px rgba(0,0,0,0.23);;
+}
+
+#gameDetails {
+    padding: 5px;
+    width: 500px;
+}
+
+#playerTurnStatus {
+    width: 210px;
+    display: flex;
+}
+
+#player1 {
+    padding: 5px 10px;
+    border: 2px solid cadetblue;
+    text-align: center;
+    width: 100px;
+}
+
+#player2 {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: 2px solid cadetblue;
+    text-align: center;
+    flex-grow: 1;
+    width: 100px;
 }
