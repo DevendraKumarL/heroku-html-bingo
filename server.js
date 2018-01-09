@@ -47,15 +47,28 @@ io.on('connection', (socket) => {
         console.log('::Server::socket.io::disconnect Number of Players: ', Players.length);
     });
 
-    // socket.on('msg send event', (msg) => {
-    // console.log('::Server::socket.io::msg send event Message received: ', msg, ' from: ', socket.id);
-    //     msg = JSON.parse(msg);
-    //     let sockt = checkBothPlayersInSameRoom(socket, msg.receiver);
-    //     if (sockt === false) {
-    //         return;
-    //     }
-    // sockt.emit('msg receive event', msg.msg)
-    // });
+    socket.on('msg send event', (msg) => {
+        console.log('::Server::socket.io::msg send event Message received: ', msg, ' from: ', socket.id);
+        msg = JSON.parse(msg);
+        let newMsg = {
+            sender: socket.id,
+            msg: msg.msg
+        };
+        let sockt = util.checkBothPlayersInSameRoom(Players, socket, msg.receiver);
+        if (sockt === false) {
+            return;
+        }
+        sockt.emit('msg receive event', newMsg);
+    });
+
+    socket.on('bingo', (opponent) => {
+        console.log('::Sender::socket.io::bingo opponent: ', opponent);
+        let sockt = util.checkBothPlayersInSameRoom(Players, socket, opponent);
+        if (sockt === false) {
+            return;
+        }
+        sockt.emit('opponent bingo', socket.id);
+    });
 });
 
 app.use(express.static(__dirname + '/public'));

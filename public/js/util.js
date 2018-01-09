@@ -10,7 +10,6 @@ exportUtil.checkBothPlayersInSameRoom = (Players, socket, receiverId) => {
             break;
         }
     }
-    console.log('::Server::socket.io::msg send event sender roomName: ', roomName1);
     for (let i = 0; i < Players.length; ++i) {
         if (receiverId === Players[i].id) {
             roomName2 = Players[i].roomName;
@@ -18,7 +17,7 @@ exportUtil.checkBothPlayersInSameRoom = (Players, socket, receiverId) => {
             break;
         }
     }
-    console.log('::Server::socket.io::msg send event receiver roomName: ', roomName2);
+    console.log('::checkBothPlayersInSameRoom:: roomName1: ', roomName1, ' roomName2: ', roomName2);
 
     if (roomName1 !== roomName2) {
         socket.emit('no opponent', receiverId);

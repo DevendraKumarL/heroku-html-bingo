@@ -1,3 +1,12 @@
+let socket;
+
+let playerTurn = {
+  player1: false,
+  player2: false
+};
+
+let isPlayerHost = true;
+
 let gameBingoElement = document.getElementById('gameBingo'),
     boardElement = document.getElementById('gameBoard'),
     bingoTitle = document.getElementById('bingoTitle'),
@@ -189,9 +198,17 @@ function processStrike(method) {
 	}
 }
 
+function endGame() {
+    playerTurn.player1 = false;
+    playerTurn.player2 = false;
+    updatePlayerTurnUI();
+    sendBingoGame();
+}
+
 function processGame() {
 	if (strikes === 5) {
 		itIsABingo();
+		endGame();
 		return;
 	}
 	let prevStrikes = strikes;
@@ -215,14 +232,15 @@ function processGame() {
 
     if (strikes === 5) {
         itIsABingo();
+        endGame();
     }
 }
 
-function scratchCell(cellElement) {
+function scratchCell(cellElementId) {
     if (!gameReadyStatus) {
         return;
     }
-	let boardIndex = cellElement.id,
+	let boardIndex = cellElementId,
         boardCell = document.getElementById(boardIndex);
 	boardCell.setAttribute('class', 'scratch-cell');
 	console.log(boardIndex);
@@ -261,7 +279,11 @@ function createBingoBoardUI() {
 			td.appendChild(document.createTextNode(bingoBoard[i][j]));
 			td.setAttribute('id', i + '' + j);
 			td.onclick = function () {
-                scratchCell(this);
+                if (!playerTurn.player1) {
+                    return;
+                }
+                scratchCell(this.id);
+                sendScratchCellMessageToOpponent(this.id);
             };
 			tr.appendChild(td);
 		}
@@ -284,8 +306,10 @@ function takeInputRoomName() {
 	}
     room = roomName + ':' + password;
     console.log('Room: ' + room);
+    createNewSocket();
 }
 
+// Build and game logic
 $(() => {
     // take room name input from client
     takeInputRoomName();
@@ -305,14 +329,73 @@ $(() => {
 });
 
 
+function updatePlayerTurnUI() {
+    if (playerTurn.player1) {
+        $('#player1').css('background-color', 'green');
+        $('#player2').css('background-color', 'red');
+        return;
+    }
+    if (playerTurn.player2) {
+        $('#player1').css('background-color', 'red');
+        $('#player2').css('background-color', 'green');
+        return;
+    }
+    if (!playerTurn.player1 && !playerTurn.player2) {
+        $('#player1').css('background-color', 'white');
+        $('#player2').css('background-color', 'white');
+    }
+}
+
+function sendScratchCellMessageToOpponent(cellId) {
+    if (!gameReadyStatus) {
+        return;
+    }
+
+    let data = {
+        receiver: players.player2,
+        msg: bingoBoard[parseInt(cellId[0])][parseInt(cellId[1])]
+    };
+    data = JSON.stringify(data);
+    console.log('::Client:: Sending message: ', data);
+    socket.emit('msg send event', data);
+
+    playerTurn.player1 = false;
+    playerTurn.player2 = true;
+    updatePlayerTurnUI();
+}
+
+function sendBingoGame() {
+    if (!gameReadyStatus) {
+        return;
+    }
+    console.log('::Client:: Sending bingo event to: ', players.player2);
+    socket.emit('bingo', players.player2);
+}
+
+function getElementIndex(element) {
+    for (let i = 0; i < 5; ++i) {
+        for (let j = 0; j < 5; ++j) {
+            if (bingoBoard[i][j] === element) {
+                return i + '' + j;
+            }
+        }
+    }
+    return '';
+}
+
+
+// build socket connection to play with opponent
 let players = {
     player1: null,
     player2: null
 };
 
-$(() => {
-    let socket = io.connect();
+function createNewSocket() {
+    socket = io.connect();
+    listenToSocketEvents();
+}
 
+function listenToSocketEvents() {
     socket.on('connect', () => {
         console.log('::Client::socket.io::connection Client connected to WebSocket server... ');
         socket.emit('room', room);
@@ -332,6 +415,11 @@ $(() => {
             socket.emit('confirm', senderId);
             console.log('players: ', players);
             roomNameElement.innerHTML = roomNameElement.innerHTML + '<u><b>' + room.split(':')[0] + '-' + room.split(':')[1] + '</b></u>';
+            isPlayerHost = true;
+
+            playerTurn.player1 = true;
+            playerTurn.player2 = false;
+            updatePlayerTurnUI();
         }
     });
 
@@ -341,6 +429,11 @@ $(() => {
             players.player2 = player2Id;
             console.log('players: ', players);
             roomNameElement.innerHTML = roomNameElement.innerHTML + '<u><b>' + room.split(':')[0] + '-' + room.split(':')[1] + '</b></u>';
+            isPlayerHost = false;
+
+            playerTurn.player1 = false;
+            playerTurn.player2 = true;
+            updatePlayerTurnUI();
         }
     });
 
@@ -358,29 +451,37 @@ $(() => {
         alert(msg + ' Please click on Restart button to load a new game');
     });
 
-    // socket.on('msg receive event', (msg) => {
-    //     console.log('::Client::socket.io::msg receive event Message received: ', msg);
-    //     if (msg.sender !== players.player1) {
-    //         $('#history').append($('<li>').text('msg: ' + msg));
-    //     }
-    // });
+    socket.on('msg receive event', (msg) => {
+        console.log('::Client::socket.io::msg receive event Message received: ', msg);
+        if (msg.sender !== players.player1) {
+            let element = getElementIndex(msg.msg);
+            if (element === '') {
+                alert('Error in finding the element sent by opponent');
+                // may be send an event to tell the opponent to retry?
+                return;
+            }
+            scratchCell(element);
+            playerTurn.player1 = true;
+            playerTurn.player2 = false;
+            updatePlayerTurnUI()
+        }
+    });
 
-    // $('#sendBtn').click(() => {
-    //     let data = {
-    //         receiver: players.player2,
-    //         msg: $('#messageInput').val()
-    //     };
-    //     data = JSON.stringify(data);
-    //     console.log('::Client:: Sending message: ', data, ' to: ', players.player2);
-    //     socket.emit('msg send event', data);
-    //     $('#messageInput').val('');
-    // });
-});
+    socket.on('opponent bingo', (sender) => {
+        console.log('::Client::socket.io::opponent bingo sender: ', sender);
+        if (sender === players.player2) {
+            $('#opponentWon').text('Opponent Player won the game :BINGO:');
+            playerTurn.player1 = false;
+            playerTurn.player2 = false;
+            updatePlayerTurnUI();
+        }
+    });
+}
 
 
 let gameReadyStatusInterval;
 
-function checkGameReadyStatus() {
+function updateGameReadyStatus() {
     if (players.player1 && players.player2) {
         gameReadyStatus = true;
         clearInterval(gameReadyStatusInterval);
@@ -389,10 +490,10 @@ function checkGameReadyStatus() {
     }
     if (!gameReadyStatus) {
         gameReadyStatusElement.innerHTML = 'GameStatus: ' + '<i>Waiting for opponent player to join game room...</i>';
-        gameReadyStatusInterval = setTimeout(checkGameReadyStatus, 1000);
+        gameReadyStatusInterval = setTimeout(updateGameReadyStatus, 1000);
     }
 }
 
 $(() => {
-    setTimeout(checkGameReadyStatus, 1000);
+    setTimeout(updateGameReadyStatus, 1000);
 });
