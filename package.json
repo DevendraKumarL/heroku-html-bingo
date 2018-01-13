@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "bingo game hosted using nodeJs",
   "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
   "dependencies": {
     "ejs": "^2.5.7",
     "express": "^4.16.2",

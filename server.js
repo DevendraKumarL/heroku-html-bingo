@@ -3,7 +3,7 @@ const express = require('express'),
 	// WebSocket = require('ws').Server,
 	http = require('http').Server(app),
 	io = require('socket.io')(http),
-    util = require('./public/js/util');
+    util = require('./utils/util');
 
 let port = process.env.PORT || 5001;
 // let wsPort = process.env.WS_PORT || 5002;

@@ -30,7 +30,8 @@ let bingoStrikeChecked = [false, false, false, false, false],
     colStrikes = [false, false, false, false, false],
     diagonalStrikes = [false, false];
 
-let gameReadyStatus = false;
+let gameReadyStatus = false,
+    playerBINGO = false;
 
 function getBingoDivElements() {
 	for (let i = 0; i < 5; i++) {
@@ -207,6 +208,7 @@ function endGame() {
 
 function processGame() {
 	if (strikes === 5) {
+        playerBINGO = true;
 		itIsABingo();
 		endGame();
 		return;
@@ -219,6 +221,7 @@ function processGame() {
     // diagonal check
     processStrike(2);
 
+    // new strikes
     if (strikes > prevStrikes) {
         let diff = strikes - prevStrikes;
         for (let i = 0; i < 5; i++) {
@@ -230,7 +233,9 @@ function processGame() {
         }
     }
 
+    // after new strikes update check for bingo
     if (strikes === 5) {
+        playerBINGO = true;
         itIsABingo();
         endGame();
     }
@@ -333,16 +338,19 @@ function updatePlayerTurnUI() {
     if (playerTurn.player1) {
         $('#player1').css('background-color', 'green');
         $('#player2').css('background-color', 'red');
+        $('#playerTurnStatusText').text('Your Turn...');
         return;
     }
     if (playerTurn.player2) {
         $('#player1').css('background-color', 'red');
         $('#player2').css('background-color', 'green');
+        $('#playerTurnStatusText').text('Opponent Turn...');
         return;
     }
     if (!playerTurn.player1 && !playerTurn.player2) {
         $('#player1').css('background-color', 'white');
         $('#player2').css('background-color', 'white');
+        $('#playerTurnStatusText').text('Game over!');
     }
 }
 
@@ -414,7 +422,7 @@ function listenToSocketEvents() {
             players.player2 = senderId;
             socket.emit('confirm', senderId);
             console.log('players: ', players);
-            roomNameElement.innerHTML = roomNameElement.innerHTML + '<u><b>' + room.split(':')[0] + '-' + room.split(':')[1] + '</b></u>';
+            roomNameElement.innerHTML = roomNameElement.innerHTML + '<u><b>' + room.split(':')[0] + '</b></u>';
             isPlayerHost = true;
 
             playerTurn.player1 = true;
@@ -428,7 +436,7 @@ function listenToSocketEvents() {
         if (players.player2 === null) {
             players.player2 = player2Id;
             console.log('players: ', players);
-            roomNameElement.innerHTML = roomNameElement.innerHTML + '<u><b>' + room.split(':')[0] + '-' + room.split(':')[1] + '</b></u>';
+            roomNameElement.innerHTML = roomNameElement.innerHTML + '<u><b>' + room.split(':')[0] + '</b></u>';
             isPlayerHost = false;
 
             playerTurn.player1 = false;
@@ -461,9 +469,11 @@ function listenToSocketEvents() {
                 return;
             }
             scratchCell(element);
-            playerTurn.player1 = true;
-            playerTurn.player2 = false;
-            updatePlayerTurnUI()
+            if (!playerBINGO) {
+                playerTurn.player1 = true;
+                playerTurn.player2 = false;
+                updatePlayerTurnUI()
+            }
         }
     });
 
@@ -485,7 +495,7 @@ function updateGameReadyStatus() {
     if (players.player1 && players.player2) {
         gameReadyStatus = true;
         clearInterval(gameReadyStatusInterval);
-        gameReadyStatusElement.innerHTML = 'GameStatus: ' + '<u><b>Game Ready to Play!</b></u>';
+        gameReadyStatusElement.innerHTML = 'GameStatus: ' + '<u><i>Game Ready to Play!</i></u>';
         return;
     }
     if (!gameReadyStatus) {

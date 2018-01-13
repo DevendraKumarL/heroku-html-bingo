@@ -44,13 +44,12 @@ body {
     margin-bottom: 5px;
 }
 .card-3 {
-    /*box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);*/
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 0 6px 1px rgba(0,0,0,0.23);;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 0 6px 1px rgba(0,0,0,0.23);
 }
 
 #gameDetails {
     padding: 5px;
-    width: 500px;
+    width: 300px;
 }
 
 #playerTurnStatus {
