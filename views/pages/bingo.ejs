@@ -5,25 +5,32 @@
 </head>
 <body>
     <h1 id="bingoTitle">Play Bingo!</h1>
-    <div id="gameDetails" class="card card-3">
-        <div id="roomName">RoomName: </div>
+		<div id="opponentWon">No winner yet</div>
+		<br>
+    <div id="gameDetails" class="card">
+        <div id="roomName" style="font-size:small;">RoomName: </div>
         <br>
-        <div id="gameReadyStatus">GameStatus: </div>
+        <div id="gameReadyStatus" style="font-size:small;">GameStatus: </div>
         <br>
-        <div id="playerTurnStatus">
-            <div id="player1">Player1</div>
-            <div id="player2">Player2</div>
-        </div>
+				<center>
+					<div id="playerTurnStatus">
+	            <div id="player1">Player1</div>
+	            <div id="player2">Player2</div>
+	        </div>
+				</center>
         <br>
-        <div id="playerTurnStatusText"></div>
+        <div id="playerTurnStatusText">Player turn status...</div>
+				<br>
     </div>
     <br><br>
-    <div id="gameBingo"></div>
-    <div id="gameBoard"></div>
+		<div id="gameDiv">
+			<center>
+				<div id="gameBingo"></div>
+				<div id="gameBoard"></div>
+			</center>
+		</div>
     <br>
-    <span id="opponentWon"></span>
-    <br><br>
-    <button id="restartBtn" class="custom-btn card card-3">Restart</button>
+    <button id="restartBtn" class="custom-btn">Restart</button>
 </body>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>

@@ -7,14 +7,16 @@ body {
 }
 
 #board td {
-    border: 1px solid #ddd;
-    padding: 10px;
+    border: 1px solid cadetblue;
+    padding: 15px;
+    font-size: large;
 }
 
 #board tr td {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 15px;
+    padding-bottom: 15px;
     text-align: center;
+    font-size: large;
 }
 
 .scratch-cell {
@@ -48,8 +50,26 @@ body {
 }
 
 #gameDetails {
-    padding: 5px;
+    padding: 10px;
     width: 300px;
+    text-align: center;
+    border: 0.05em solid cadetblue;
+    border-radius: 5px;
+}
+
+#opponentWon {
+  padding: 10px;
+  width: 300px;
+  text-align: center;
+  border: 0.05em solid cadetblue;
+  border-radius: 5px;
+}
+
+#gameDiv {
+  padding: 10px;
+  width: 300px;
+  border: 0.05em solid cadetblue;
+  border-radius: 5px;
 }
 
 #playerTurnStatus {
@@ -59,7 +79,8 @@ body {
 
 #player1 {
     padding: 5px 10px;
-    border: 2px solid cadetblue;
+    border: 0.05em solid cadetblue;
+    border-radius: 5px;
     text-align: center;
     width: 100px;
 }
@@ -67,7 +88,8 @@ body {
 #player2 {
     margin-left: 10px;
     padding: 5px 10px;
-    border: 2px solid cadetblue;
+    border: 0.05em solid cadetblue;
+    border-radius: 5px;
     text-align: center;
     flex-grow: 1;
     width: 100px;
