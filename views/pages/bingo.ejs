@@ -1,33 +1,55 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Bingo!</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	 crossorigin="anonymous">
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	 crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+	 crossorigin="anonymous"></script>
+
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	 crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+	<link href="https://fonts.googleapis.com/css?family=ABeeZee|Cabin|Cabin+Sketch|Cinzel|Jua|Lato|Orbitron|Roboto+Mono|Sacramento"
+	 rel="stylesheet">
 </head>
+
 <body>
-    <h1 id="bingoTitle">Play Bingo!</h1>
-    <div id="gameDetails" class="card card-3">
-        <div id="roomName">RoomName: </div>
-        <br>
-        <div id="gameReadyStatus">GameStatus: </div>
-        <br>
-        <div id="playerTurnStatus">
-            <div id="player1">Player1</div>
-            <div id="player2">Player2</div>
-        </div>
-        <br>
-        <div id="playerTurnStatusText"></div>
-    </div>
-    <br><br>
-    <div id="gameBingo"></div>
-    <div id="gameBoard"></div>
-    <br>
-    <span id="opponentWon"></span>
-    <br><br>
-    <button id="restartBtn" class="custom-btn card card-3">Restart</button>
+	<div class="container">
+		<br>
+		<h1 id="bingoTitle" class="text-center">Bingo!</h1>
+		<br>
+		<div class="col-lg-5 col-md-5 card card-1">
+			<div id="gameDetails">
+				<p id="roomName" class="text-center text-primary"></p>
+				<p id="gameReadyStatus" style="display: none;" class="text-center"></p>
+				<div id="playerTurnStatus">
+					<div id="player1" class="btn btn-secondary">Player1</div>
+					<div id="player2" class="btn btn-secondary">Player2</div>
+				</div>
+				<br>
+				<p id="playerTurnStatusText" style="display: none;" class="text-center alert alert-primary"></p>
+				<p id="result" style="display: none;"></p>
+			</div>
+		</div>
+		<div class="col-lg-6 col-md-6 text-center" id="gametable">
+			<div id="gameBingo"></div>
+			<div id="gameBoard"></div>
+		</div>
+		<br><br>
+		<button id="restartBtn" class="btn btn-info">Restart</button>
+	</div>
 </body>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
 
 <script type="text/javascript" src="./js/bingo.js"></script>
 <link rel="stylesheet" type="text/css" href="./css/style.css">
+
 </html>
