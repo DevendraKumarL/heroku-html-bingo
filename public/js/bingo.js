@@ -73,16 +73,13 @@ function initiateBoard() {
 
 function initiateGameObjects() {
 	storeBingoNumbers();
-	// console.log(bingoNumbers);
+
 	storeBingoPositions();
-	// console.log(bingoPositions);
+
 	bingoNumbers = shuffleList(bingoNumbers);
 	bingoPositions = shuffleList(bingoPositions);
-	// console.log(bingoNumbers);
-	// console.log(bingoPositions);
+
 	initiateBoard();
-	// console.log(bingoBoard);
-	// console.log(bingoBoardChecked);
 }
 
 function createBingoBoardMatrix() {
@@ -102,14 +99,14 @@ function createBingoBoardMatrix() {
 			}
 		}
 	}
-	// console.log(bingoBoard);
 }
 
 function flashBingo() {
 	if (colorFlag) {
 		colorFlag = false;
 		bingoTitle.style.color = 'red';
-	} else {
+	}
+	else {
 		colorFlag = true;
 		bingoTitle.style.color = 'blue';
 	}
@@ -140,7 +137,7 @@ function processStrike(method) {
 					if (trueCount === 5) {
 						rowStrikes[i] = true;
 						strikes++;
-						console.log('rowStrike : ' + i);
+						console.log('rowStrike : ' + (i + 1));
 					}
 				}
 			}
@@ -156,7 +153,7 @@ function processStrike(method) {
 					if (trueCount === 5) {
 						colStrikes[i] = true;
 						strikes++;
-						console.log('colStrike : ' + i);
+						console.log('colStrike : ' + (i + 1));
 					}
 				}
 			}
@@ -173,7 +170,7 @@ function processStrike(method) {
 			if (trueCount === 5) {
 				diagonalStrikes[0] = true;
 				strikes++;
-				console.log('diagonalStrike : 0');
+				console.log('diagonalStrike : 1');
 			}
 
 			// right-top-corner to left-bottom-corner
@@ -189,7 +186,7 @@ function processStrike(method) {
 			if (trueCount === 5) {
 				diagonalStrikes[1] = true;
 				strikes++;
-				console.log('diagonalStrike : 1');
+				console.log('diagonalStrike : 2');
 			}
 			break;
 	}
@@ -292,7 +289,9 @@ function createBingoBoardUI() {
 					return;
 				}
 				scratchCell(this.id);
-				sendScratchCellMessageToOpponent(this.id);
+				if (!playerBINGO) {
+					sendScratchCellMessageToOpponent(this.id);
+				}
 			};
 			tr.appendChild(td);
 		}
@@ -495,6 +494,19 @@ function listenToSocketEvents() {
 			$('#result').css('font-size', '25px');
 			alert('Opponent Player won the game first! :(');
 		}
+	});
+
+	socket.on('left game room', (opponentId) => {
+		console.log('::Client::socket.io::left game room opponentId: ', opponentId);
+		if (opponentId !== players.player2) {
+			return;
+		}
+		$('#gameBoard').remove();
+		$('#gameBingo').remove();
+		$('#player1').hide();
+		$('#player2').hide();
+		$('#playerTurnStatusText').html('<b>Opponent left the game room</b>')
+			.attr('class', 'text-center alert alert-warning').css('font-size', '20px');
 	});
 }
 
